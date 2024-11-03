@@ -46,15 +46,13 @@ def main():
                 abilities = stats["abilities"][level]
                 if len(abilities) != 0:
                     ability_list.append(abilities)
-                stats_list.append(f"[{attack} {ranged} {magic} {armor} {health} {speed} {ability_list}]")
-            with open("cards.txt", "a") as file:
+                stats_list.append([attack, ranged, magic, armor, health, speed, list(ability_list)])
+            with open("table.md", "a", encoding="utf-8") as f:
                 title = f"{name} - {type} - {mana} mana - {color}"
-                headers = ["Malee", "Ranged", "Magic", "Armor", "Health", "Speed", "Abilities"]
+                headers = ["Melee", "Ranged", "Magic", "Armor", "Health", "Speed", "Abilities"]
 
                 markdown_table = tabulate(stats_list, headers, tablefmt="github")
-
-                with open("table.md", "a", encoding="utf-8") as f:
-                    f.write(title + markdown_table)
+                f.write(title + "\n" + markdown_table + "\n\n")
 
         else:
             mana = stats["mana"]
@@ -65,17 +63,15 @@ def main():
             health = stats["health"]
             speed = stats["speed"]
             abilities = stats.get("abilities", [])
-            stats_list.append(f"{attack} {ranged} {magic} {armor} {health} {speed} {abilities}")
-            with open("cards.txt", "a") as file:
+            stats_list.append([attack, ranged, magic, armor, health, speed, ability_list])
+            with open("table.md", "a", encoding="utf-8") as f:
                 title = f"{name} - {type} - {mana} mana - {color}"
-                headers = ["Malee", "Ranged", "Magic", "Armor", "Health", "Speed", "Abilities"]
+                headers = ["Melee", "Ranged", "Magic", "Armor", "Health", "Speed", "Abilities"]
 
                 markdown_table = tabulate(stats_list, headers, tablefmt="github")
-
-                with open("table.md", "a", encoding="utf-8") as f:
-                    f.write(title + markdown_table)
+                f.write(title + "\n" + markdown_table + "\n\n")
 
 
 if __name__ == "__main__":
     main()
-
+    
