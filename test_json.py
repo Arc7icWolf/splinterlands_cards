@@ -1,16 +1,6 @@
 import requests
 import json
-import logging
 from tabulate import tabulate
-
-# logger
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-handler = logging.FileHandler("main.log", mode="a")
-formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-handler.setFormatter(formatter)
-logger.addHandler(handler)
-
 
 # Send request, get response
 def get_cards():
