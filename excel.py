@@ -55,6 +55,8 @@ def get_data():
             ability = ", ".join(stats.get("abilities", []))
             cards_data.append([name, expansion, typ, color, mana, lvl, melee, ranged, magic, armor, health, speed, ability])
 
+        cards_data.append([])
+
     return cards_data
 
 
