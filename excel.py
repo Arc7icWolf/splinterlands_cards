@@ -38,7 +38,7 @@ def get_data():
                 armor = stats["armor"][level]
                 health = stats["health"][level]
                 speed = stats["speed"][level]
-                ability = stats["abilities"][level]
+                ability = ", ".join(stats["abilities"][level])
                 #if len(abilities) != 0:
                 #    ability_list.append(abilities)
                 cards_data.append([name, expansion, typ, color, mana, lvl, melee, ranged, magic, armor, health, speed, ability])
@@ -53,7 +53,7 @@ def get_data():
             armor = stats["armor"]
             health = stats["health"]
             speed = stats["speed"]
-            ability = stats.get("abilities", [])
+            ability = ", ".join(stats.get("abilities", []))
             cards_data.append([name, expansion, typ, color, mana, lvl, melee, ranged, magic, armor, health, speed, ability])
 
     return cards_data
