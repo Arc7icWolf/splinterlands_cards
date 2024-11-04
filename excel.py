@@ -98,7 +98,7 @@ def get_data():
         else:
             lvl = "all"
             mana = stats["mana"]
-            attack = stats["attack"]
+            melee = stats["attack"]
             ranged = stats["ranged"]
             magic = stats["magic"]
             armor = stats["armor"]
