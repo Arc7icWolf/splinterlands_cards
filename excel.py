@@ -123,7 +123,18 @@ def get_data():
             armor = stats["armor"]
             health = stats["health"]
             speed = stats["speed"]
-            ability = ", ".join(stats.get("abilities", []))
+            abilities = ", ".join(stats.get("abilities", []))
+            choose_abilities = stats.get("ptrOptions", [])
+            if choose_abilities:
+                choose_1_ability = choose_abilities[0]["name"]
+                choose_1_target = choose_abilities[0]["max"]
+                choose_2_ability = choose_abilities[1]["name"]
+                choose_2_target = choose_abilities[1]["max"]
+                choose_abilities_formatted = f"Choose {choose_1_ability} x{choose_1_target} or {choose_2_ability} x{choose_2_target}"
+                if abilities:
+                    abilities = f"{abilities} + {choose_abilities_formatted}"
+                else:
+                    abilities = choose_abilities_formatted
             cards_data.append(
                 [
                     name,
@@ -138,7 +149,7 @@ def get_data():
                     armor,
                     health,
                     speed,
-                    ability,
+                    abilities,
                 ]
             )
 
