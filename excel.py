@@ -2,7 +2,6 @@ from openpyxl import Workbook
 from openpyxl.styles import Font
 import requests
 import json
-from tabulate import tabulate
 
 
 # Send request, get response
