@@ -12,18 +12,19 @@ def get_cards():
     return cards
 
 
+# Get expansion's name from its corresponding num
 def get_expansion(num):
-    match num: 
+    match num:
         case "0,1":
             return "Alpha/Beta"
-        
-        case "1": 
+
+        case "1":
             return "Beta"
 
         case "2":
             return "Promo"
 
-        case "3": 
+        case "3":
             return "Reward"
 
         case "4":
@@ -44,7 +45,7 @@ def get_expansion(num):
         case "9":
             return ""
 
-        case "10": 
+        case "10":
             return "Soulbound Reward Chaos Legion"
 
         case "11":
@@ -60,21 +61,20 @@ def get_expansion(num):
             return ""
 
 
-
-
+# Get and collect data off all Splinterlands' cards
 def get_data():
     cards = get_cards()
     cards_data = []
     for card in cards:
         if card["game_type"] != "splinterlands":
-            break
+            break  # No assets from other games
         name = card["name"]
         expansion_num = card["editions"]
         expansion_name = get_expansion(expansion_num)
         typ = card["type"]
         color = card["color"]
         second_color = card["secondary_color"]
-        if second_color is not None:
+        if second_color is not None:  # For multicolor cards
             color = f"{color}/{second_color}"
         stats = card["stats"]
         if typ == "Monster":
@@ -89,11 +89,30 @@ def get_data():
                 armor = stats["armor"][level]
                 health = stats["health"][level]
                 speed = stats["speed"][level]
+
+                # Show at each level all available abilities
                 ability = ", ".join(stats["abilities"][level])
                 if ability != "":
                     abilities_list.append(ability)
                 abilities = ", ".join(abilities_list)
-                cards_data.append([name, expansion_name, typ, color, mana, lvl, melee, ranged, magic, armor, health, speed, abilities])
+
+                cards_data.append(
+                    [
+                        name,
+                        expansion_name,
+                        typ,
+                        color,
+                        mana,
+                        lvl,
+                        melee,
+                        ranged,
+                        magic,
+                        armor,
+                        health,
+                        speed,
+                        abilities,
+                    ]
+                )
 
         else:
             lvl = "all"
@@ -105,18 +124,50 @@ def get_data():
             health = stats["health"]
             speed = stats["speed"]
             ability = ", ".join(stats.get("abilities", []))
-            cards_data.append([name, expansion_name, typ, color, mana, lvl, melee, ranged, magic, armor, health, speed, ability])
+            cards_data.append(
+                [
+                    name,
+                    expansion_name,
+                    typ,
+                    color,
+                    mana,
+                    lvl,
+                    melee,
+                    ranged,
+                    magic,
+                    armor,
+                    health,
+                    speed,
+                    ability,
+                ]
+            )
 
         cards_data.append([])
 
     return cards_data
 
 
-
+# Create excel file with all the collected data
 def main():
     wb = Workbook()
     ws = wb.active
-    cards_list = [["Name", "Expansion", "Type", "Color", "Mana", "Level", "Melee", "Ranged", "Magic", "Armor", "Health", "Speed", "Abilities"]]
+    cards_list = [
+        [
+            "Name",
+            "Expansion",
+            "Type",
+            "Color",
+            "Mana",
+            "Level",
+            "Melee",
+            "Ranged",
+            "Magic",
+            "Armor",
+            "Health",
+            "Speed",
+            "Abilities",
+        ]
+    ]
 
     cards_data = get_data()
 
@@ -126,7 +177,7 @@ def main():
     for row in cards_list:
         ws.append(row)
 
-    # mate title bold
+    # make title bold
     ft = Font(bold=True)
     for row in ws["A1:N1"]:
         for cell in row:
