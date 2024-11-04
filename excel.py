@@ -2,6 +2,7 @@ from openpyxl import Workbook
 from openpyxl.styles import Font
 import requests
 import json
+import sys
 
 
 # Send request, get response
@@ -11,6 +12,56 @@ def get_cards():
     return cards
 
 
+def get_expansion(num):
+    match num: 
+        case "0,1":
+            return "Alpha/Beta"
+        
+        case "1": 
+            return "Beta"
+
+        case "2":
+            return "Promo"
+
+        case "3": 
+            return "Reward"
+
+        case "4":
+            return "Untamed"
+
+        case "5":
+            return "Dice"
+
+        case "6":
+            return "Gladius"
+
+        case "7":
+            return "Chaos Legion"
+
+        case "8":
+            return "Riftwatchers"
+
+        case "9":
+            return ""
+
+        case "10": 
+            return "Soulbound Reward Chaos Legion"
+
+        case "11":
+            return ""
+
+        case "12":
+            return "Rebellion"
+
+        case "13":
+            return "Soulbound Reward Chaos Rebellion"
+
+        case _:
+            return ""
+
+
+
+
 def get_data():
     cards = get_cards()
     cards_data = []
@@ -18,7 +69,8 @@ def get_data():
         if card["game_type"] != "splinterlands":
             break
         name = card["name"]
-        expansion = card["editions"]
+        expansion_num = card["editions"]
+        expansion_name = get_expansion(expansion_num)
         typ = card["type"]
         color = card["color"]
         second_color = card["secondary_color"]
@@ -27,7 +79,7 @@ def get_data():
         stats = card["stats"]
         if typ == "Monster":
             levels_num = len(stats["mana"])
-            #ability_list = []
+            abilities_list = []
             for level in range(levels_num):
                 mana = stats["mana"][level]
                 lvl = level + 1
@@ -38,13 +90,13 @@ def get_data():
                 health = stats["health"][level]
                 speed = stats["speed"][level]
                 ability = ", ".join(stats["abilities"][level])
-                #if len(abilities) != 0:
-                #    ability_list.append(abilities)
-                cards_data.append([name, expansion, typ, color, mana, lvl, melee, ranged, magic, armor, health, speed, ability])
-
+                if ability != "":
+                    abilities_list.append(ability)
+                abilities = ", ".join(abilities_list)
+                cards_data.append([name, expansion_name, typ, color, mana, lvl, melee, ranged, magic, armor, health, speed, abilities])
 
         else:
-            lvl = 1
+            lvl = "all"
             mana = stats["mana"]
             attack = stats["attack"]
             ranged = stats["ranged"]
@@ -53,7 +105,7 @@ def get_data():
             health = stats["health"]
             speed = stats["speed"]
             ability = ", ".join(stats.get("abilities", []))
-            cards_data.append([name, expansion, typ, color, mana, lvl, melee, ranged, magic, armor, health, speed, ability])
+            cards_data.append([name, expansion_name, typ, color, mana, lvl, melee, ranged, magic, armor, health, speed, ability])
 
         cards_data.append([])
 
