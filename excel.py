@@ -61,7 +61,7 @@ def get_expansion(num):
             return ""
 
 
-# Get and collect data off all Splinterlands' cards
+# Get and collect data of all Splinterlands cards
 def get_data():
     cards = get_cards()
     cards_data = []
