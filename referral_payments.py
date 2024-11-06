@@ -23,7 +23,7 @@ def main():
         # Split "credits" from amount received and sum to total payments received
         total_payments += float(affiliate_payment.split()[0])
     total_payments_in_dollar = total_payments / 1000 # Get value in dollars
-    print(f"{total_payments_in_dollar:.2f} dollars from {payments_count} referral purchases")
+    print(f"{player_name} earned {total_payments_in_dollar:.2f} dollars from {payments_count} referral purchases")
 
 
 if __name__ == "__main__":
