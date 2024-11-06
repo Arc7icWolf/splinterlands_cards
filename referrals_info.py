@@ -54,7 +54,7 @@ def main():
     print(
         f"{player_name.capitalize()} earned {total_payments_in_dollar:.2f} dollars "
         f"from {referrals_amount} referrals "
-        f"doing {payments_count} eligible purchases"
+        f"doing {payments_count} eligible purchases."
     )
 
 
