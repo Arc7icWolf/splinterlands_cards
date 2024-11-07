@@ -1,18 +1,31 @@
 import requests
 import json
+import argparse
+
+
+DEFAULT_PLAYER_NAME = "arc7icwolf"
 
 
 # Send request to the API and return the deserialized response
-def get_response(data):
-    response = requests.get(data)
-    response = response.json()
-    return response
+def get_response(url, session: requests.Session):
+    try:
+        request = requests.Request("GET", url=url).prepare()
+        response = session.send(request, allow_redirects=False)
+        response.raise_for_status()
+        response = response.json()
+        return response
+    except requests.exceptions.RequestException as e:
+        print(f"HTTP error: {e}")
+        return {}
+    except json.JSONDecodeError:
+        print("Error decoding JSON response.")
+        return {}
 
 
 # Get purchases made by referrals and return them
-def get_referral_payments(payments_count, player):
-    data = f"https://api.splinterlands.com/players/referral_payments?page_size={payments_count}&username={player}"
-    payments = get_response(data)
+def get_referral_payments(payments_count, player, session: requests.Session):
+    url = f"https://api.splinterlands.com/players/referral_payments?page_size={payments_count}&username={player}"
+    payments = get_response(url, session)
     return payments
 
 
@@ -28,29 +41,30 @@ def sum_total_payments(purchases):
 
 
 # Get and return number and total value of referral payments
-def get_referral_payments_info(player):
+def get_referral_payments_info(player, session: requests.Session):
     # First, get number of referral payments received by target account
-    payments = get_referral_payments(1, player)
+    payments = get_referral_payments(1, player, session)
     payments_count = payments["count"]
     # Then, get all referral payments for target player
-    payments = get_referral_payments(payments_count, player)
+    payments = get_referral_payments(payments_count, player, session)
     payments_purchases = payments["purchases"]
     total_payments_in_dollar = sum_total_payments(payments_purchases)
     return payments_count, total_payments_in_dollar
 
 
 # Get the amount of users referred by target player
-def get_referrals_amount(player):
-    data = f"https://api.splinterlands.com/players/referral_users?username={player}"
-    referrals = get_response(data)
+def get_referrals_amount(player, session: requests.Session):
+    url = f"https://api.splinterlands.com/players/referral_users?username={player}"
+    referrals = get_response(url, session)
     return referrals["count"]
 
 
 # Main func: print result
-def main():
-    player_name = "arc7icwolf"
-    payments_count, total_payments_in_dollar = get_referral_payments_info(player_name)
-    referrals_amount = get_referrals_amount(player_name)
+def main(player_name, session: requests.Session):
+    payments_count, total_payments_in_dollar = get_referral_payments_info(
+        player_name, session
+    )
+    referrals_amount = get_referrals_amount(player_name, session)
     print(
         f"{player_name.capitalize()} earned {total_payments_in_dollar:.2f} dollars "
         f"from {referrals_amount} referrals "
@@ -59,4 +73,17 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(
+        description="Get referrals payments and referrals count."
+    )
+    parser.add_argument(
+        "player_name",
+        nargs="?",
+        default=DEFAULT_PLAYER_NAME,
+        help="Insert an existing Splinterlands account username.",
+    )
+
+    args = parser.parse_args()
+
+    with requests.Session() as session:
+        main(args.player_name, session)
