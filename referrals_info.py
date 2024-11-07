@@ -3,9 +3,6 @@ import json
 import argparse
 
 
-DEFAULT_PLAYER_NAME = "arc7icwolf"
-
-
 # Send request to the API and return the deserialized response
 def get_response(url, session: requests.Session):
     try:
@@ -79,7 +76,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "player_name",
         nargs="?",
-        default=DEFAULT_PLAYER_NAME,
+        default="arc7icwolf",
         help="Insert an existing Splinterlands account username.",
     )
 
