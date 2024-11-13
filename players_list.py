@@ -24,6 +24,8 @@ def get_leaderboards(session: requests.Session):
         "CREDITS",
         "DEC",
         "LICENSE",
+        "PLOT",
+        "TRACT",
         "REGION",
         "SPSTOTAL",
     ]
@@ -40,8 +42,7 @@ def get_leaderboards(session: requests.Session):
 # Main func: print result
 def main(session: requests.Session):
     accounts = get_leaderboards(session)
-    for account in accounts:
-        print(account)
+    print(f"Found {len(accounts)} accounts")
 
 if __name__ == "__main__":
     with requests.Session() as session:
