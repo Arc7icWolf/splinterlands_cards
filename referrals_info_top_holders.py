@@ -1,13 +1,6 @@
 import requests
 import json
-import argparse
-from players_list.py import get_leaderboards
-
-# Initialize a session
-session = requests.Session()
-
-# Get default value if no account name is passed as argument
-DEFAULT_PLAYER_NAME = get_leaderboards(session)
+from players_list import get_leaderboards
 
 
 # Send request to the API and return the deserialized response
@@ -64,33 +57,32 @@ def get_referrals_amount(player, session: requests.Session):
 
 
 # Main func: print result
-def main(player_name_list, session: requests.Session):
+def main(session: requests.Session):
+    player_name_list = get_leaderboards(session)
+    referral_info_list = []
     for player_name in player_name_list:
+        referrals_amount = get_referrals_amount(player_name, session)
+        if referrals_amount == 0:
+            continue
         payments_count, total_payments_in_dollar = get_referral_payments_info(
             player_name, session
         )
-        referrals_amount = get_referrals_amount(player_name, session)
-        print(
-            f"{player_name.capitalize()} earned {total_payments_in_dollar:.2f} dollars "
+        referral_info = (
+            f"@{player_name} earned {total_payments_in_dollar:.2f} dollars "
             f"from {referrals_amount} referrals "
-            f"doing {payments_count} eligible purchases."
+            f"doing {payments_count} eligible purchases.\n"
         )
+        print(referral_info)
+        referral_info_list.append(referral_info)
+        print("added to the list")
+
+    sorted_referral_info_list = sorted(referral_info_list, key=lambda x: int(x.split("from ")[1].split(" referrals")[0]), reverse=True)
+
+    with open("referral_info.txt", "a", newline="", encoding="utf-8") as file:
+        for info in sorted_referral_info_list:
+            file.write(info)
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Get referrals payments and referrals count."
-    )
-    parser.add_argument(
-        "player_name",
-        nargs="?",
-        default=DEFAULT_PLAYER_NAME,
-        help="Insert an existing Splinterlands account username.",
-    )
-
-    args = parser.parse_args()
-
-    player_name_list = [args.player_name]
-
     with requests.Session() as session:
-        main(player_name_list, session)
+        main(session)
